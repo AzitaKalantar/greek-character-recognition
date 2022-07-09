@@ -47,7 +47,8 @@ for glyph in glyphs:
                    [1]+2, points[0][0]-2:points[1][0]+2]
     try:
         i += 1
-        #cv2.imwrite('GRPOLY_Dataset\images\{a}.jpg'.format(a=i), nimage)
+        cv2.imwrite(
+            'C:\\Users\\parvi\\Desktop\\Project\\images\{a}.jpg'.format(a=i), nimage)
         data.append(['{a}.jpg'.format(a=i), glyph.get_text()[3]])
         lables_set.add(glyph.get_text()[3])
     except:
@@ -73,10 +74,10 @@ labels_list = list(lables_set)
 for row in data:
     new_data.append([row[0], labels_list.index(row[1])])
 
-with open('annotations_file.csv', 'w', encoding='utf8', newline='') as f:
+with open('generated/annotations_file.csv', 'w', encoding='utf8', newline='') as f:
     writer = csv.writer(f)
     writer.writerows(new_data)
 
-with open('labels.csv', 'w', encoding='utf8', newline='') as f:
+with open('generated/labels.csv', 'w', encoding='utf8', newline='') as f:
     writer = csv.writer(f)
     writer.writerows(lables_set)
