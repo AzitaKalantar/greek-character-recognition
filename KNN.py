@@ -3,6 +3,7 @@ from torchvision import transforms
 import os
 from PIL import Image
 import pandas as pd
+from torch import flatten
 
 
 class CustomImageDataset(Dataset):
@@ -35,7 +36,7 @@ class CustomImageDataset(Dataset):
 # print(get_image_size(image))
 # print(type(image))
 data_transform_train = transforms.Compose([
-    transforms.Resize([32, 32]),
+    transforms.Resize([20, 20]),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.0], std=[1.0])
 ])
@@ -128,13 +129,21 @@ test_dataloader = DataLoader(
 inputes_train, labels_train = next(iter(train_dataloader))
 
 inputes_test, labels_test = next(iter(train_dataloader))
+
+inputes_train = flatten(inputes_train, start_dim=1)
+inputes_test = flatten(inputes_test, start_dim=1)
+
+
 inputes_train = inputes_train.numpy()
 labels_train = labels_train.numpy()
 inputes_test = inputes_test.numpy()
 labels_test = labels_test.numpy()
 
+# print(inputes_train[0])
+# print(labels_train.shape)
 
-#Y_predict_iris = knn_predict(X_test_iris, X_train_iris, Y_train_iris, 3)
-#error, error_rate = calculate_error(Y_test_iris, Y_predict_iris)
-#print('number of errors:', error)
-#print('error rate :', error_rate)
+Y_predict_iris = knn_predict(
+    inputes_test[:100], inputes_train, labels_train, 3)
+error, error_rate = calculate_error(labels_test[:100], Y_predict_iris)
+print('number of errors:', error)
+print('error rate :', error_rate)
