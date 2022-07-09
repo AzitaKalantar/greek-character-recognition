@@ -44,6 +44,7 @@ class CustomImageDataset(Dataset):
 # print(image.shape)
 # print(get_image_size(image))
 # print(type(image))
+
 data_transform_train = transforms.Compose([
     transforms.Resize([32, 32]),
     transforms.ToTensor(),
@@ -54,7 +55,7 @@ data_transform_train = transforms.Compose([
 testsize = 1000
 
 mydataset = CustomImageDataset(
-    'annotations_file.csv', 'GRPOLY_Dataset\images', data_transform_train)
+    'generated/annotations_file.csv', 'C:\\Users\\parvi\\Desktop\\Project\\images', data_transform_train)
 
 train_data, test_data = random_split(
     mydataset, [len(mydataset)-testsize, testsize])
@@ -133,13 +134,13 @@ class CNN(nn.Module):
         return x
 
 
-nn1 = NN1()
+#nn1 = NN1()
 nn1 = CNN()
-nn1 = CNN2()
+#nn1 = CNN2()
 loss_function = nn.CrossEntropyLoss()
 optimizer1 = optim.RMSprop(nn1.parameters(), lr=0.001)
 
-for epoch in range(10):  # number of times to loop over the dataset
+for epoch in range(50):  # number of times to loop over the dataset
     current_loss = 0.0
     n_mini_batches = 0
     for i, mini_batch in enumerate(train_dataloader, 0):
@@ -153,15 +154,14 @@ for epoch in range(10):  # number of times to loop over the dataset
         optimizer1.step()  # does one optimisation step
         n_mini_batches += 1
         current_loss += loss.item()  # remember that the loss is a zero-order tensor
-
     print('Epoch %d loss: %.3f' % (epoch+1, current_loss / n_mini_batches))
 
-PATH = './cnn_10.pth'
+PATH = './generated/cnn_10.pth'
 torch.save(nn1.state_dict(), PATH)
 
 #net = Net()
 # net.load_state_dict(torch.load(PATH))
-classes = pd.read_csv("./labels.csv")
+# classes = pd.read_csv("./labels.csv")
 correct = 0
 total = 0
 # since we're not training, we don't need to calculate the gradients for our outputs
