@@ -1,1 +1,9 @@
 .venvOCR/
+vision/
+__pycache__/
+generated/
+coco_utils.py
+coco_eval.py
+engine.py
+utils.py
+transforms.py
