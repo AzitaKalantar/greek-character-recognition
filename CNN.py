@@ -40,10 +40,47 @@ class CustomImageDataset(Dataset):
         return image, label
 
 
+def train_model(model, train_data):
+    loss_function = nn.CrossEntropyLoss()
+    optimizer1 = optim.RMSprop(model.parameters(), lr=0.001)
+    for epoch in range(30):  # number of times to loop over the dataset
+        current_loss = 0.0
+        n_mini_batches = 0
+        for i, mini_batch in enumerate(train_data, 0):
+            images, labels = mini_batch
+            optimizer1.zero_grad()
+            outputs = model(images)
+            #labels = [torch.stack(label) for label in list(labels)]
+            # print(type(outputs))
+            loss = loss_function(outputs, labels)
+            loss.backward()  # does the backward pass and computes all gradients
+            optimizer1.step()  # does one optimisation step
+            n_mini_batches += 1
+            current_loss += loss.item()  # remember that the loss is a zero-order tensor
+        print('Epoch %d loss: %.3f' % (epoch+1, current_loss / n_mini_batches))
+
+
+def evaluate_model(model, test_data):
+    correct = 0
+    total = 0
+    # since we're not training, we don't need to calculate the gradients for our outputs
+    with torch.no_grad():
+        for data in test_data:
+            images, labels = data
+            # calculate outputs by running images through the network
+            outputs = model(images)
+            # the class with the highest energy is what we choose as prediction
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+    print(
+        f'Accuracy of the network on the 10000 test images: {100 * correct // total} %')
+
 #image = read_image("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos1.jpg")
 # print(image.shape)
 # print(get_image_size(image))
 # print(type(image))
+
 
 data_transform_train = transforms.Compose([
     transforms.Resize([32, 32]),
@@ -54,8 +91,9 @@ data_transform_train = transforms.Compose([
 #trainsize = 3000
 testsize = 1000
 
+
 mydataset = CustomImageDataset(
-    'generated/annotations_file.csv', 'C:\\Users\\parvi\\Desktop\\Project\\images', data_transform_train)
+    'annotations_file.csv', 'C:\\Users\\parvi\\Desktop\\Project\\images\\final_images', data_transform_train)
 
 train_data, test_data = random_split(
     mydataset, [len(mydataset)-testsize, testsize])
@@ -63,25 +101,42 @@ train_data, test_data = random_split(
 train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True)
 test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
 
-# test_dataloader = DataLoader(
-#   mydataset, batch_size=64, shuffle=True, train=False)
 
-#train_features, train_labels = next(iter(train_dataloader))
+train_features, train_labels = next(iter(train_dataloader))
+"""
+img = train_features[0]
+label = train_labels[0]
+plt.imshow(img.view(32, 32), cmap="gray")
+plt.show()
+print(f"Label: {label}")
+"""
 
-#img = train_features[0]
-#label = train_labels[0]
-#plt.imshow(img.view(32, 32), cmap="gray")
-# plt.show()
-#print(f"Label: {label}")
 
-
-class NN1(nn.Module):
+class NN10(nn.Module):
 
     def __init__(self):
-        super(NN1, self).__init__()
+        super(NN10, self).__init__()
         self.layers = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(1024, 115))  # a linear layer (a matrix, plus biases) with 784 inputs and 10 outputs
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 212))  # a linear layer (a matrix, plus biases) with 784 inputs and 10 outputs
 
     def forward(self, x):  # computes the forward pass ... this one is particularly simple
         x = self.layers(x)
@@ -89,7 +144,6 @@ class NN1(nn.Module):
 
 
 class CNN2(nn.Module):
-
     def __init__(self):
         super(CNN2, self).__init__()
         self.layers = nn.Sequential(
@@ -99,7 +153,7 @@ class CNN2(nn.Module):
             nn.Flatten(),
             nn.Linear(5400, 900),
             nn.ReLU(),
-            nn.Linear(900, 115))
+            nn.Linear(900, 212))
 
     def forward(self, x):  # computes the forward pass ... this one is particularly simple
         x = self.layers(x)
@@ -107,7 +161,6 @@ class CNN2(nn.Module):
 
 
 class CNN(nn.Module):
-
     def __init__(self):
         super(CNN, self).__init__()
         # takes one input channel (greyscale), gives 6 output channes, each from a 3x3 convolutional neuron
@@ -115,19 +168,15 @@ class CNN(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, 3)
         self.fc1 = nn.Linear(6*6*16, 350)
         self.fc2 = nn.Linear(350, 256)
-        self.fc3 = nn.Linear(256, 115)
+        self.fc3 = nn.Linear(256, 212)
 
     def forward(self, x):  # computes the forward pass ... this one is particularly simple
         # Max pooling over a (2, 2) window
-        # print(x.shape)
         x = F.max_pool2d(F.relu(self.conv1(x)), 2)
-        # print(x.shape)
         # If the size is a square, you can specify with a single number
         x = F.max_pool2d(F.relu(self.conv2(x)), 2)
-        # print(x.shape)
         # flatten all dimensions except the batch dimension
         x = torch.flatten(x, 1)
-        # print(x.shape)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -135,45 +184,9 @@ class CNN(nn.Module):
 
 
 #nn1 = NN1()
-nn1 = CNN()
-#nn1 = CNN2()
-loss_function = nn.CrossEntropyLoss()
-optimizer1 = optim.RMSprop(nn1.parameters(), lr=0.001)
-
-for epoch in range(50):  # number of times to loop over the dataset
-    current_loss = 0.0
-    n_mini_batches = 0
-    for i, mini_batch in enumerate(train_dataloader, 0):
-        images, labels = mini_batch
-        optimizer1.zero_grad()
-        outputs = nn1(images)
-        #labels = [torch.stack(label) for label in list(labels)]
-        # print(type(outputs))
-        loss = loss_function(outputs, labels)
-        loss.backward()  # does the backward pass and computes all gradients
-        optimizer1.step()  # does one optimisation step
-        n_mini_batches += 1
-        current_loss += loss.item()  # remember that the loss is a zero-order tensor
-    print('Epoch %d loss: %.3f' % (epoch+1, current_loss / n_mini_batches))
-
+model = CNN2()
+train_model(model, train_dataloader)
+evaluate_model(model, test_dataloader)
+evaluate_model(model, train_dataloader)
 PATH = './generated/cnn_10.pth'
-torch.save(nn1.state_dict(), PATH)
-
-#net = Net()
-# net.load_state_dict(torch.load(PATH))
-# classes = pd.read_csv("./labels.csv")
-correct = 0
-total = 0
-# since we're not training, we don't need to calculate the gradients for our outputs
-with torch.no_grad():
-    for data in test_dataloader:
-        images, labels = data
-        # calculate outputs by running images through the network
-        outputs = nn1(images)
-        # the class with the highest energy is what we choose as prediction
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-
-print(
-    f'Accuracy of the network on the 10000 test images: {100 * correct // total} %')
+#torch.save(nn1.state_dict(), PATH)
