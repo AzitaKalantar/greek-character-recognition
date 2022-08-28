@@ -40,10 +40,10 @@ class CustomImageDataset(Dataset):
         return image, label
 
 
-def train_model(model, train_data):
+def train_model(model, train_data, ep):
     loss_function = nn.CrossEntropyLoss()
     optimizer1 = optim.RMSprop(model.parameters(), lr=0.001)
-    for epoch in range(30):  # number of times to loop over the dataset
+    for epoch in range(ep):  # number of times to loop over the dataset
         current_loss = 0.0
         n_mini_batches = 0
         for i, mini_batch in enumerate(train_data, 0):
@@ -58,6 +58,7 @@ def train_model(model, train_data):
             n_mini_batches += 1
             current_loss += loss.item()  # remember that the loss is a zero-order tensor
         print('Epoch %d loss: %.3f' % (epoch+1, current_loss / n_mini_batches))
+        # return(current_loss / n_mini_batches)
 
 
 def evaluate_model(model, test_data):
@@ -74,7 +75,8 @@ def evaluate_model(model, test_data):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
     print(
-        f'Accuracy of the network on the 10000 test images: {100 * correct // total} %')
+        f'Accuracy of the network on test images: {100 * correct // total} %')
+    return 100 * correct // total
 
 #image = read_image("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos1.jpg")
 # print(image.shape)
@@ -89,20 +91,26 @@ data_transform_train = transforms.Compose([
 ])
 
 #trainsize = 3000
-testsize = 1000
+testsize = 0
 
 
-mydataset = CustomImageDataset(
+train_data = CustomImageDataset(
     'annotations_file.csv', 'C:\\Users\\parvi\\Desktop\\Project\\images\\final_images', data_transform_train)
 
-train_data, test_data = random_split(
-    mydataset, [len(mydataset)-testsize, testsize])
+
+test_data = CustomImageDataset(
+    'annotations_file_test.csv', 'C:\\Users\\parvi\\Desktop\\Project\\images\\final_test', data_transform_train)
+
+
+# train_data, test_data = random_split(
+#    mydataset, [len(mydataset)-testsize, testsize])
 
 train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True)
 test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
 
 
-train_features, train_labels = next(iter(train_dataloader))
+#train_features, train_labels = next(iter(train_dataloader))
+
 """
 img = train_features[0]
 label = train_labels[0]
@@ -183,10 +191,9 @@ class CNN(nn.Module):
         return x
 
 
-#nn1 = NN1()
-model = CNN2()
-train_model(model, train_dataloader)
-evaluate_model(model, test_dataloader)
-evaluate_model(model, train_dataloader)
-PATH = './generated/cnn_10.pth'
-#torch.save(nn1.state_dict(), PATH)
+model = CNN()
+train_model(model, train_dataloader, 15)
+test_accuracy = evaluate_model(model, test_dataloader)
+train_accuracy = evaluate_model(model, train_dataloader)
+PATH = './generated/CNN_15.pth'
+torch.save((model.state_dict(), test_accuracy, train_accuracy), PATH)
