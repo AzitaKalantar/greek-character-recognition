@@ -1,0 +1,308 @@
+from ast import arg
+from email import header
+import random
+import time
+import cv2
+import numpy as np
+from bs4 import BeautifulSoup
+import csv
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+from torch import rand, randint
+
+
+def organaze_split_data():
+    image1 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos1.jpg')
+    image2 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos2.jpg')
+    image3 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos3.jpg')
+    image4 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos4.jpg')
+    image5 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos5.jpg')
+    image6 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos6.jpg')
+
+    file1 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos1.xml",
+                 "r", encoding="utf8")
+    file2 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos2.xml",
+                 "r", encoding="utf8")
+    file3 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos3.xml",
+                 "r", encoding="utf8")
+    file4 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos4.xml",
+                 "r", encoding="utf8")
+    file5 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos5.xml",
+                 "r", encoding="utf8")
+    file6 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B1\saripolos6.xml",
+                 "r", encoding="utf8")
+
+    image7 = cv2.imread(
+        "GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris1.jpg")
+    image8 = cv2.imread(
+        "GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris2.jpg")
+    image9 = cv2.imread(
+        "GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris3.jpg")
+    image10 = cv2.imread(
+        "GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris4.jpg")
+    image11 = cv2.imread(
+        "GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris5.jpg")
+
+    file7 = open("GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris1.xml",
+                 "r", encoding="utf8")
+    file8 = open("GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris2.xml",
+                 "r", encoding="utf8")
+    file9 = open("GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris3.xml",
+                 "r", encoding="utf8")
+    file10 = open("GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris4.xml",
+                  "r", encoding="utf8")
+    file11 = open("GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B2\\venizelos_efimeris5.xml",
+                  "r", encoding="utf8")
+
+    image12 = cv2.imread(
+        'GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B3\\markezinis1.jpg')
+    image13 = cv2.imread(
+        'GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B3\\markezinis7.jpg')
+    image14 = cv2.imread(
+        'GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B3\\markezinis8.jpg')
+    image15 = cv2.imread(
+        'GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B3\\markezinis9.jpg')
+    image16 = cv2.imread(
+        'GRPOLY_Dataset\\GRPOLY-DB-MachinePrinted-B3\\markezinis10.jpg')
+    image17 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis11.jpg')
+    image18 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis12.jpg")
+    image19 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis13.jpg")
+    image20 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis15.jpg")
+    image21 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis17.jpg")
+    image22 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis18.jpg")
+    image23 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis19.jpg')
+    image24 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis20.jpg')
+    image25 = cv2.imread(
+        'GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis21.jpg')
+    image26 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis22.jpg")
+    image27 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis23.jpg")
+    image28 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis24.jpg")
+    image29 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis25.jpg")
+
+    file12 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis1.xml",
+                  "r", encoding="utf8")
+    file13 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis7.xml",
+                  "r", encoding="utf8")
+    file14 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis8.xml",
+                  "r", encoding="utf8")
+    file15 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis9.xml",
+                  "r", encoding="utf8")
+    file16 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis10.xml",
+                  "r", encoding="utf8")
+    file17 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis11.xml",
+                  "r", encoding="utf8")
+    file18 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis12.xml",
+                  "r", encoding="utf8")
+    file19 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis13.xml",
+                  "r", encoding="utf8")
+    file20 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis15.xml",
+                  "r", encoding="utf8")
+    file21 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis17.xml",
+                  "r", encoding="utf8")
+    file22 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis18.xml",
+                  "r", encoding="utf8")
+    file23 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis19.xml",
+                  "r", encoding="utf8")
+    file24 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis20.xml",
+                  "r", encoding="utf8")
+    file25 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis21.xml",
+                  "r", encoding="utf8")
+    file26 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis22.xml",
+                  "r", encoding="utf8")
+    file27 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis23.xml",
+                  "r", encoding="utf8")
+    file28 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis24.xml",
+                  "r", encoding="utf8")
+    file29 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B3\markezinis25.xml",
+                  "r", encoding="utf8")
+
+    image30 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou1.jpg")
+    image31 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou2.jpg")
+    image32 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou3.jpg")
+    image33 = cv2.imread(
+        "GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou4.jpg")
+
+    file30 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou1.xml",
+                  "r", encoding="utf8")
+    file31 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou2.xml",
+                  "r", encoding="utf8")
+    file32 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou3.xml",
+                  "r", encoding="utf8")
+    file33 = open("GRPOLY_Dataset\GRPOLY-DB-MachinePrinted-B4\\blaxou4.xml",
+                  "r", encoding="utf8")
+
+    files = [(image1, file1), (image2, file2), (image3, file3), (image4, file4), (image5, file5), (image6, file6),
+             (image7, file7), (image8, file8), (image9, file9), (image10,
+                                                                 file10), (image11, file11),
+             (image13, file13), (image14, file14), (image15,
+                                                    file15), (image16, file16), (image17, file17), (image18, file18),
+             (image19, file19), (image20,
+                                 file20), (image21, file21), (image23, file23),
+             (image24, file24), (image26, file26), (image27,
+                                                    file27), (image28, file28), (image29, file29), (image30, file30), (image31, file31), (image32, file32)]
+    # files = [(image28, file28), (image29, file29), (image30, file30),
+    #         (image31, file31), (image32, file32)]
+
+    labels = {}
+    folders = {}
+    folder_count = 0
+    errors = 0
+    index_errors = 0
+
+    for n in range(len(files)):
+        image, file = files[n]
+        contents = file.read()
+        soup = BeautifulSoup(contents, 'xml')
+        glyphs = soup.find_all('Glyph')
+
+        for glyph in glyphs:
+
+            points = []
+            points_str = str(glyph.Coords['points']).split(" ")
+            for point in points_str:
+                points.append(tuple(map(int, point.split(','))))
+
+            if len(points) != 4 or len(glyph.get_text()) < 4 or points[0][0] > points[2][0] or points[0][1] > points[2][1]:
+                continue
+
+            nimage = image[points[0][1] - 2:points[3]
+                           [1] + 2, points[0][0] - 2:points[1][0] + 2]
+            try:
+                current_glyph = glyph.get_text()[3]
+
+                if current_glyph in folders.keys():
+                    name = labels[current_glyph] + 1
+                    folder = folders[current_glyph]
+                    current_path = "C:\\Users\\parvi\\Desktop\\Project\\images\\class_{0}".format(
+                        folder)
+                    cv2.imwrite("{0}\\{1}.jpg".format(
+                        current_path, name), nimage)
+                    labels[current_glyph] += 1
+                else:
+                    name = 1
+                    folders[current_glyph] = folder_count
+                    folder = folders[current_glyph]
+                    folder_count += 1
+                    current_path = "C:\\Users\\parvi\\Desktop\\Project\\images\\class_{0}".format(
+                        folder)
+                    os.makedirs(current_path)
+
+                    cv2.imwrite("{0}\\{1}.jpg".format(
+                        current_path,  name), nimage)
+                    labels[current_glyph] = 1
+
+            except IndexError as err:
+                print(err)
+                print(glyph.get_text())
+                index_errors += 1
+                print("idx errors: {}".format(index_errors))
+
+            except:
+                print(points)
+                print(glyph.get_text())
+                print(name)
+                print(folder)
+                errors += 1
+                print('errors: {}'.format(errors))
+
+    data_df = pd.DataFrame(
+        {"char": folders.keys(), "class": folders.values(), "count": labels.values()})
+    # data_df.to_csv("data.csv",index=False,encoding="utf-8")
+    # print(data_df.head())
+    return data_df
+
+
+def prepare_data_for_training(data_df, n):
+    #frequent_data = data_df[data_df["count"] > n]
+    frequent_data = data_df.reset_index(drop=True)
+    #frequent_data["n"] = np.nan
+
+    def select_random_imgs(row, n, root):
+        #scale = (int(row["count"])-min) / (max - min)
+        #count = min(int(row["count"]), 4)
+        n = int(row["count"])//40+2
+        #n = min(row["count"], 5)
+        rng = np.random.default_rng()
+        numbers = rng.integers(low=1, high=int(row["count"])+1, size=n)
+        #numbers = range(1, n+1)
+        #row["n"] = n
+        # print(numbers)
+        i = 1
+        for number in numbers:
+            image = cv2.imread(
+                root + "\\class_{}\\".format(str(int(row["class"]))) + str(number) + ".jpg")
+
+            name = "{0}_{1}.jpg".format(str(row.name), i)
+            cv2.imwrite(root + "\\final_images_knn\\" + name, image)
+            i += 1
+        row["class"] = row.name
+
+    # os.makedirs("C:\\Users\\parvi\\Desktop\\Project\\images\\final_images")
+
+    frequent_data.apply(func=select_random_imgs, args=(
+        30, "C:\\Users\\parvi\\Desktop\\Project\\images"), axis=1)
+    frequent_data["class"] = frequent_data.index[:]
+    # print(frequent_data.tail())
+    return frequent_data
+
+
+#data_df = organaze_split_data()
+
+# data_df.to_csv("data.csv")
+data_df = pd.read_csv("data.csv", encoding="utf-8")
+#discription = pd.Series(data_df["count"])
+#discription.hist(cumulative=True, density=1, bins=1000)
+# plt.show()
+# print(discription.sum())
+# print(discription.min())
+# quit()
+# print(data_df.head())
+training_df = prepare_data_for_training(data_df, 1)
+training_df.to_csv("training_data.csv", index=False, encoding="utf-8")
+
+data_df = pd.read_csv("training_data.csv", encoding="utf-8")
+
+
+# plt.show()
+dictionary = {"image_name": [],
+              "label": []}
+
+#max = data_df["count"].max()
+#min = data_df["count"].min()
+
+for ind, row in data_df.iterrows():
+    #scale = (int(row["count"])-min) / (max - min)
+    #count = min(int(row["count"]), 4)
+
+    n = int(row["count"])//40+2
+    #n = min(row["count"], 5)
+    for i in range(1, n+1):
+        dictionary["image_name"] += [str(row['class']) + "_" + str(i) + ".jpg"]
+        dictionary["label"] += [row['class']]
+
+data = pd.DataFrame(dictionary)
+data.to_csv("annotations_file_knn.csv", index=False,
+            encoding="utf-8", header=False)
